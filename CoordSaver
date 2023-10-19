@@ -1,0 +1,108 @@
+import json
+import numpy as np
+from Bio.PDB import PDBParser
+import os
+
+# Create a PDB parser
+parser = PDBParser(QUIET=True)
+
+# Folder containing PDB files
+pdb_folder = "/content/drive/MyDrive/outputPDB"
+
+# Initialize the dictionary to store results
+result_dict = {}
+
+# Mapping of three-letter amino acid codes to one-letter codes
+aa_mapping = {
+    "ALA": "A", "ARG": "R", "ASN": "N", "ASP": "D", "CYS": "C",
+    "GLN": "Q", "GLU": "E", "GLY": "G", "HIS": "H", "ILE": "I",
+    "LEU": "L", "LYS": "K", "MET": "M", "PHE": "F", "PRO": "P",
+    "SER": "S", "THR": "T", "TRP": "W", "TYR": "Y", "VAL": "V"
+}
+
+# Loop through each PDB file in the folder
+for pdb_file in os.listdir(pdb_folder):
+    if pdb_file.endswith(".pdb"):
+        file_path = os.path.join(pdb_folder, pdb_file)
+        structure = parser.get_structure(os.path.splitext(pdb_file)[0], file_path)
+
+        # Initialize a list to store C-alpha coordinates for the current file
+        ca_coordinates = []
+
+        # Extract C-alpha coordinates for each amino acid
+        for model in structure:
+            for chain in model:
+                for residue in chain:
+                    if residue.get_id()[0] == " " and residue.get_resname() in aa_mapping:
+                        try:
+                            aa_name = aa_mapping[residue.get_resname()]
+                            ca_coord = residue['CA'].get_coord()
+                            ca_coordinates.append(ca_coord.tolist())
+                        except KeyError:
+                            pass  # C-alpha not found for this residue
+
+        # Add the C-alpha coordinates list to the result dictionary
+        result_dict[os.path.splitext(pdb_file)[0]] = ca_coordinates
+
+# Save the output to a JSON file
+output_file = "outputCoords.json"
+with open(output_file, "w") as json_file:
+    json.dump(result_dict, json_file, indent=4)
+
+print(f"Output saved to {output_file}")
+
+# plotitng the C-alpha atoms to have a better shape an representation for the proteins.
+
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d.art3d import Line3DCollection
+from Bio.PDB import PDBParser
+
+def extract_ca_coordinates(pdb_folder, pdb_name):
+    parser = PDBParser(QUIET=True)
+    ca_coordinates = {}
+
+    pdb_file = f"{pdb_name}.pdb"
+    file_path = os.path.join(pdb_folder, pdb_file)
+    structure = parser.get_structure(pdb_name, file_path)
+
+    for model in structure:
+        for chain in model:
+            for residue in chain:
+                if residue.get_id()[0] == " " and residue.has_id("CA"):  # Check for C-alpha atom
+                    res_id = residue.id[1]
+                    ca_coord = residue['CA'].get_coord()
+                    ca_coordinates[res_id] = ca_coord
+
+    return ca_coordinates
+
+def plot_protein_ca_with_lines(ca_coordinates, pdb_name):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    x_coords, y_coords, z_coords = [], [], []
+
+    for res_id, coordinates in ca_coordinates.items():
+        x, y, z = coordinates
+        x_coords.append(x)
+        y_coords.append(y)
+        z_coords.append(z)
+
+    ax.scatter(x_coords, y_coords, z_coords, label=pdb_name, s=10)
+
+    lines = [[(x_coords[i], y_coords[i], z_coords[i]), (x_coords[i+1], y_coords[i+1], z_coords[i+1])] for i in range(len(x_coords)-1)]
+    lc = Line3DCollection(lines, linewidths=2.0, colors='grey', alpha=0.7)
+    ax.add_collection3d(lc)
+
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    ax.legend()
+    plt.show()
+
+# Replace with the folder containing your PDB files
+pdb_folder = "/content/drive/MyDrive/outputPDB"
+
+# Example usage:
+protein_name = input("Enter the protein name (without .pdb extension): ")
+ca_coordinates = extract_ca_coordinates(pdb_folder, protein_name)
+plot_protein_ca_with_lines(ca_coordinates, protein_name)
