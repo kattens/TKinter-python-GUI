@@ -1,5 +1,4 @@
-# 
-Usage Instructions:
+# Usage Instructions:
 1. Download all the files as a complete package, then execute the GUI code file. The application will open, enabling you to download and manage files, creating your preferred dataset for various purposes.
 
 # Upcoming Additions to this Repository:
