@@ -1,4 +1,6 @@
 """
+we have to add functions for deleting files here before doing the sequence building:
+
 Functions to be defined = columns
 - r factor/ value
 - b factor/ value
@@ -11,7 +13,6 @@ Functions to be defined = columns
 - enzyme classification
 - symmetry type
 """
-
 
 import os
 import time

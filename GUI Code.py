@@ -4,7 +4,7 @@ import csv
 import os
 from PDB_Downloader import PDBDownloader
 from Chain_Seperator import PDBChainSplitter
-from Functions import DNADelete, NMRDelete
+from Deleter import DNADelete, NMRDelete
 from Functions2 import PDBProcessor
 #from csvAdder import process_folder,save_results_to_csv
 
@@ -77,33 +77,43 @@ root = tk.Tk()
 root.title("PDB File Downloader")
 root.geometry("800x500")
 
-# UI for CSV and Directory selection
-tk.Label(root, text="Select a CSV file:").pack()
-entry_file_path = tk.Entry(root)
-entry_file_path.pack()
-tk.Button(root, text="Browse CSV", command=browse_file).pack()
+# Create Frames
+pdb_frame = ttk.LabelFrame(root, text="PDB File Management")
+csv_frame = ttk.LabelFrame(root, text="CSV Management")
 
-tk.Label(root, text="Select an output directory:").pack()
-entry_output_directory = tk.Entry(root)
-entry_output_directory.pack()
-tk.Button(root, text="Browse Output", command=browse_output_directory).pack()
+# Grid layout for frames
+pdb_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+csv_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
-# Buttons for processing
-tk.Button(root, text="Process", command=process_file).pack()
-tk.Button(root, text="Separate Chains", command=split_pdb_chains).pack()
-tk.Button(root, text="Remove NMR", command=remove_nmr).pack()
-tk.Button(root, text="Remove DNA", command=remove_dna).pack()
+# PDB File Management Frame
+tk.Label(pdb_frame, text="Select an output directory:").pack(pady=5)
+entry_output_directory = tk.Entry(pdb_frame)
+entry_output_directory.pack(pady=5)
+tk.Button(pdb_frame, text="Browse Output", command=browse_output_directory).pack(pady=5)
+tk.Button(pdb_frame, text="Process", command=process_file).pack(pady=5)
+tk.Button(pdb_frame, text="Separate Chains", command=split_pdb_chains).pack(pady=5)
+tk.Button(pdb_frame, text="Remove NMR", command=remove_nmr).pack(pady=5)
+tk.Button(pdb_frame, text="Remove DNA", command=remove_dna).pack(pady=5)
+
+# CSV Management Frame
+tk.Label(csv_frame, text="Select a CSV file:").pack(pady=5)
+entry_file_path = tk.Entry(csv_frame)
+entry_file_path.pack(pady=5)
+tk.Button(csv_frame, text="Browse CSV", command=browse_file).pack(pady=5)
+tk.Button(csv_frame, text="Create Empty CSV and Process Functions", command=create_empty_csv_and_process).pack(pady=5)
 
 # Element Selection Section
-tk.Label(root, text="Please choose your elements:").pack()
-element_frame = tk.Frame(root)
+tk.Label(csv_frame, text="Please choose your elements:").pack(pady=5)
+element_frame = tk.Frame(csv_frame)
 element_frame.pack(padx=20, pady=10)
 elements = ["Protein_Name", "Polymer_Entity", "Sequence", "C-alpha_Coords", "Refinement_Resolution", "Experiment_Type", "Enzyme_Classification", "Taxonomy", "B_Factor", "R_Factor", "Symmetry_Type"]
 var = [tk.IntVar() for _ in elements]
 for idx, element in enumerate(elements):
     ttk.Checkbutton(element_frame, text=element, variable=var[idx]).pack(anchor="w")
 
-# Create an empty CSV button
-tk.Button(root, text="Create Empty CSV and Process Functions", command=create_empty_csv_and_process).pack()
+# Configure column weights for resizing
+root.grid_columnconfigure(0, weight=1)
+root.grid_columnconfigure(1, weight=1)
 
+# Start main loop
 root.mainloop()
