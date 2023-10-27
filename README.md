@@ -2,8 +2,9 @@
 1. Download all the files as a complete package, then execute the GUI code file. The application will open, enabling you to download and manage files, creating your preferred dataset for various purposes.
 
 # Upcoming Additions to this Repository:
-1. A readily available dataset for users who simply want something to work with.
+1. A readily available dataset for users who want something to work with.
 2. A Python package for those who wish to modify the core code to meet their specific requirements, eliminating the need to start from scratch.
+3. Expand the current user interface by integrating deletion buttons for every individual property displayed on the list. At present, the interface includes deletion buttons specifically for NMR and low-resolution data. We aim to introduce additional deletion capabilities for other properties. Furthermore, we plan to implement control variables to provide expert users with the tools they need to effectively manage and manipulate these variables.
 
 # Data Cleaning Procedure:
 
