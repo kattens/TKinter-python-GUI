@@ -79,6 +79,17 @@ def remove_dna():
     except Exception as e:
         messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
+
+def export_selected_elements():
+    """Function to export selected elements."""
+    selected_elements = [element.get() for element, var in zip(elements, vars_elements) if var.get()]
+    if selected_elements:
+        messagebox.showinfo("Selected Elements", ', '.join(selected_elements))
+    else:
+        messagebox.showinfo("No Selection", "Please select at least one element.")
+
+
+
 def create_empty_csv_and_process():
     """Function to create an empty CSV file and initiate processing."""
     column_names_modified = ["Protein_Name", "Polymer_Entity", "Sequence", "C-alpha_Coords", "Refinement_Resolution", "Experiment_Type", "Enzyme_Classification", "Taxonomy", "B_Factor", "R_Factor", "Symmetry_Type"]
@@ -134,10 +145,19 @@ tk.Button(frame_buttons, text="Split PDB Chains", command=split_pdb_chains).pack
 tk.Button(frame_buttons, text="Remove NMR Files", command=remove_nmr).pack(side=tk.LEFT, padx=5)
 tk.Button(frame_buttons, text="Remove DNA Files", command=remove_dna).pack(side=tk.LEFT, padx=5)
 tk.Button(frame_buttons, text="Create Empty CSV & Process", command=create_empty_csv_and_process).pack(side=tk.LEFT, padx=5)
+tk.Button(frame_buttons, text="Export Selected Elements", command=export_selected_elements).pack(side=tk.LEFT, padx=5)
 
 frame_elements = tk.Frame(app)
 frame_elements.pack(pady=10)
-elements = ["C", "O", "N", "S"]
+elements = [
+                "Polymer_Entity",
+                "Refinement_Resolution",
+                "Experiment_Type",
+                "Sequence",
+                "Enzyme_Classification",
+                "Symmetry_Type",
+                "C_alpha_Coords",
+            ]
 vars_elements = []
 for element in elements:
     var = tk.IntVar()
