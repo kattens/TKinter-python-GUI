@@ -9,6 +9,9 @@ from Chain_Seperator import PDBChainSplitter
 from Deleter import DNADelete, NMRDelete
 from Functions2 import PDBProcessor
 
+# Global variable to store the output directory
+global_output_path = None
+
 # --- Functions ---
 def browse_file():
     """Function to browse and select a CSV file."""
@@ -26,6 +29,8 @@ def browse_output_directory():
 
 def process_file():
     """Function to process selected CSV file and download PDB files."""
+    global global_output_path  # Declare global_output_path as a global variable
+
     csv_file_path = entry_file_path.get()
     output_directory = entry_output_directory.get()
 
@@ -39,10 +44,32 @@ def process_file():
 
         downloader = PDBDownloader(output_directory)
         downloader.download_pdb(protein_names)
+
+        # Update global_output_path with the output_directory
+        global_output_path = output_directory
+
         messagebox.showinfo("Process Complete", "Downloading of PDB files is complete!")
 
     except Exception as e:
         messagebox.showerror("Error", f"An error occurred: {str(e)}")
+
+
+
+#for setting the global output
+def browse_output_directory():
+    """Function to browse and select an output directory and update global_output_path."""
+    global global_output_path  # Access the global_output_path variable
+
+    output_directory = filedialog.askdirectory()
+    if output_directory:
+        entry_output_directory.delete(0, tk.END)
+        entry_output_directory.insert(0, output_directory)
+        
+        # Update the global_output_path
+        global_output_path = output_directory  # Set the global_output_path to the selected directory
+
+
+
 
 def split_pdb_chains():
     """Function to split PDB chains."""
@@ -80,13 +107,47 @@ def remove_dna():
         messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
 
+
+
+
+
+
+# Global variables to store GUI elements
+elements = ["Polymer_Entity", "Refinement_Resolution", "Experiment_Type", "Sequence", 
+            "Enzyme_Classification", "Symmetry_Type", "C_alpha_Coords"]
+vars_elements = []  # Store tkinter BooleanVar instances for each checkbox element
 def export_selected_elements():
     """Function to export selected elements."""
-    selected_elements = [element.get() for element, var in zip(elements, vars_elements) if var.get()]
-    if selected_elements:
-        messagebox.showinfo("Selected Elements", ', '.join(selected_elements))
-    else:
+    global global_output_path  # Use the global output path
+
+    # Check which elements are selected by the user
+    selected_elements = [element for element, var in zip(elements, vars_elements) if var.get()]
+
+    if not selected_elements:
         messagebox.showinfo("No Selection", "Please select at least one element.")
+        return
+
+    if not global_output_path:
+        messagebox.showerror("Error", "Output path not set.")
+        return
+
+    # Create the file path for exporting
+    #file_path = os.path.join(global_output_path, "selected_elements.csv")
+    file_path = global_output_path
+    # Process the PDB file using the selected elements
+    processor = PDBProcessor(file_path, selected_elements)
+    results = processor.process()
+
+    # Create a summary of the results to display
+    summary = []
+    for element in selected_elements:
+        summary.append(f"{element}: {results.get(element, 'Data not found')}")
+
+    # Show the summary in a messagebox
+    summary_text = '\n'.join(summary)
+    messagebox.showinfo("Results", summary_text)
+
+
 
 
 
@@ -121,7 +182,7 @@ def create_empty_csv_and_process():
         messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
 # --- Main Application ---
-app = tk.Tk()
+app = app = tk.Tk()
 app.title("PDB Management Tool")
 
 frame_file = tk.Frame(app)
@@ -149,15 +210,17 @@ tk.Button(frame_buttons, text="Export Selected Elements", command=export_selecte
 
 frame_elements = tk.Frame(app)
 frame_elements.pack(pady=10)
+
+
 elements = [
-                "Polymer_Entity",
-                "Refinement_Resolution",
-                "Experiment_Type",
-                "Sequence",
-                "Enzyme_Classification",
-                "Symmetry_Type",
-                "C_alpha_Coords",
-            ]
+    "Polymer_Entity",
+    "Refinement_Resolution",
+    "Experiment_Type",
+    "Sequence",
+    "Enzyme_Classification",
+    "Symmetry_Type",
+    "C_alpha_Coords",
+]
 vars_elements = []
 for element in elements:
     var = tk.IntVar()
