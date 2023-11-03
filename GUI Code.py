@@ -181,6 +181,28 @@ def create_empty_csv_and_process():
     except Exception as e:
         messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
+
+# Function to update CSV with PDB data, assuming the PDBProcessor class has an update_csv method.
+def update_csv_with_pdb_data():
+    """Function to update CSV with PDB data."""
+    global global_output_path
+    pdb_folder = global_output_path
+    csv_file_path = entry_file_path.get()
+    
+    if not pdb_folder or not csv_file_path:
+        messagebox.showerror("Error", "Please select both the PDB directory and the CSV file path.")
+        return
+
+    try:
+        # Create an instance of PDBProcessor and call the update_csv method
+        processor = PDBProcessor(pdb_folder)  # Make sure to provide necessary arguments to the constructor.
+        processor.update_csv(csv_file_path)    # Call the update_csv method.
+        messagebox.showinfo("Success", "The CSV file has been updated with PDB data successfully.")
+    except Exception as e:
+        messagebox.showerror("Error", f"An error occurred: {str(e)}")
+
+
+
 # --- Main Application ---
 app = app = tk.Tk()
 app.title("PDB Management Tool")
@@ -207,6 +229,13 @@ tk.Button(frame_buttons, text="Remove NMR Files", command=remove_nmr).pack(side=
 tk.Button(frame_buttons, text="Remove DNA Files", command=remove_dna).pack(side=tk.LEFT, padx=5)
 tk.Button(frame_buttons, text="Create Empty CSV & Process", command=create_empty_csv_and_process).pack(side=tk.LEFT, padx=5)
 tk.Button(frame_buttons, text="Export Selected Elements", command=export_selected_elements).pack(side=tk.LEFT, padx=5)
+
+
+
+frame_update_csv = tk.Frame(app)
+frame_update_csv.pack(pady=5)
+tk.Button(frame_update_csv, text="Update CSV with PDB Data", command=update_csv_with_pdb_data).pack()
+
 
 frame_elements = tk.Frame(app)
 frame_elements.pack(pady=10)
