@@ -1,7 +1,5 @@
 import os
 import requests
-import csv
-from Bio import PDB  # Import the Bio.PDB module
 
 # Define the PDBDownloader class with an output directory parameter
 class PDBDownloader:
