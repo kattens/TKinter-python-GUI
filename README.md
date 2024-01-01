@@ -9,6 +9,9 @@ link of the document: (to be announced)
 ## Features
 - **Ultimate PDB Dataset**: A robust dataset originating from authentic biological experiments, encompassing data on about 75,000 organisms. This expands to nearly 200,000 unique biological profiles when considering individual chains of proteins, DNA, or RNA.
 - **Customizable Data Selection**: A set of tools that enable you to handpick and modify datasets to fit the exact needs of your project. These tools support both JSON and CSV formats and include a user-friendly GUI for ease of use.
+CSV link:https://www.kaggle.com/datasets/kattens/biopdbkit
+Json link: (to be announced)
+ 
 - **BioPDBKit**: A specialized Python package for those who prefer a more hands-on approach to data manipulation, suitable for advanced users.
 
 ## Getting Started
