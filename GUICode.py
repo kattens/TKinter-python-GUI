@@ -7,7 +7,7 @@ import os
 from PDB_Downloader import PDBDownloader
 from Chain_Seperator import PDBChainSplitter
 from Deleter import DNADelete, NMRDelete
-from Functions2 import PDBProcessor
+from PDBProcessor import PDBProcessor
 
 # Global variable to store the output directory
 global_output_path = None
@@ -27,31 +27,63 @@ def browse_output_directory():
         entry_output_directory.delete(0, tk.END)
         entry_output_directory.insert(0, output_directory)
 
-def process_file():
-    """Function to process selected CSV file and download PDB files."""
-    global global_output_path  # Declare global_output_path as a global variable
 
-    csv_file_path = entry_file_path.get()
-    output_directory = entry_output_directory.get()
 
-    if not csv_file_path or not output_directory:
-        messagebox.showerror("Error", "Please select a CSV file and output directory.")
+
+
+
+
+
+
+"""FILES THAT ARE CHECKED TO BE CORRECT"""
+        
+def process_file(output_directory, protein_names):
+    """Function to process selected CSV file/list and download PDB files."""
+    try:
+        downloader = PDBDownloader(output_directory, protein_names)
+        downloader.download_pdb()  # Assuming this method downloads the files
+
+        messagebox.showinfo("Process Complete", "Downloading of PDB files is complete!")
+    except Exception as e:
+        messagebox.showerror("Error", f"An error occurred: {str(e)}")
+
+
+def split_pdb_chains():
+    """Function to split PDB chains."""
+    input_folder = entry_output_directory.get()
+    if not input_folder:
+        messagebox.showerror("Error", "Please select an output directory.")
         return
 
     try:
-        with open(csv_file_path, 'r') as csv_in:
-            protein_names = [row[0] for row in csv.reader(csv_in)][1:]
-
-        downloader = PDBDownloader(output_directory)
-        downloader.download_pdb(protein_names)
-
-        # Update global_output_path with the output_directory
-        global_output_path = output_directory
-
-        messagebox.showinfo("Process Complete", "Downloading of PDB files is complete!")
+        pdb_splitter = PDBChainSplitter(input_folder, input_folder)
+        pdb_splitter.process_pdb_files()
+        messagebox.showinfo("Process Complete", "Separating of PDB files is complete!")
 
     except Exception as e:
         messagebox.showerror("Error", f"An error occurred: {str(e)}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -71,21 +103,11 @@ def browse_output_directory():
 
 
 
-def split_pdb_chains():
-    """Function to split PDB chains."""
-    input_folder = entry_output_directory.get()
-    if not input_folder:
-        messagebox.showerror("Error", "Please select an output directory.")
-        return
 
-    try:
-        pdb_splitter = PDBChainSplitter(input_folder, input_folder)
-        pdb_splitter.process_pdb_files()
-        messagebox.showinfo("Process Complete", "Separating of PDB files is complete!")
 
-    except Exception as e:
-        messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
+
+#FIGURE SOMETHING OUT FO THE DELETER
 def remove_nmr():
     """Function to remove NMR-related PDB files."""
     try:
@@ -105,6 +127,10 @@ def remove_dna():
 
     except Exception as e:
         messagebox.showerror("Error", f"An error occurred: {str(e)}")
+
+
+
+
 
 
 
@@ -151,56 +177,6 @@ def export_selected_elements():
 
 
 
-def create_empty_csv_and_process():
-    """Function to create an empty CSV file and initiate processing."""
-    column_names_modified = ["Protein_Name", "Polymer_Entity", "Sequence", "C-alpha_Coords", "Refinement_Resolution", "Experiment_Type", "Enzyme_Classification", "Taxonomy", "B_Factor", "R_Factor", "Symmetry_Type"]
-    
-    try:
-        output_path = filedialog.askdirectory(title="Please set your output path:")
-        if not output_path:
-            messagebox.showerror("Error", "Output path not selected.")
-            return
-
-        csv_file_name = filedialog.asksaveasfilename(defaultextension=".csv", title="Please set your CSV file name:")
-        if not csv_file_name:
-            messagebox.showerror("Error", "CSV file name not provided.")
-            return
-
-        full_file_path = os.path.join(output_path, csv_file_name)
-        with open(full_file_path, 'w', newline='') as csv_file:
-            csv.writer(csv_file).writerow(column_names_modified)
-        messagebox.showinfo("Info", f"Empty CSV file with column names created at '{full_file_path}'")
-
-        # Uncomment the following code if needed
-        # processor = PDBProcessor(full_file_path)  # Adjust this as needed
-        # folder_path = "/content/drive/MyDrive/SimplePDBFiles"  # Set your folder path here
-        # process_folder(processor, folder_path)
-        # save_results_to_csv(processor, folder_path)
-        # messagebox.showinfo("Process Complete", "Processing is complete!")
-
-    except Exception as e:
-        messagebox.showerror("Error", f"An error occurred: {str(e)}")
-
-
-# Function to update CSV with PDB data, assuming the PDBProcessor class has an update_csv method.
-def update_csv_with_pdb_data():
-    """Function to update CSV with PDB data."""
-    global global_output_path
-    pdb_folder = global_output_path
-    csv_file_path = entry_file_path.get()
-    
-    if not pdb_folder or not csv_file_path:
-        messagebox.showerror("Error", "Please select both the PDB directory and the CSV file path.")
-        return
-
-    try:
-        # Create an instance of PDBProcessor and call the update_csv method
-        processor = PDBProcessor(pdb_folder)  # Make sure to provide necessary arguments to the constructor.
-        processor.update_csv(csv_file_path)    # Call the update_csv method.
-        messagebox.showinfo("Success", "The CSV file has been updated with PDB data successfully.")
-    except Exception as e:
-        messagebox.showerror("Error", f"An error occurred: {str(e)}")
-
 
 
 # --- Main Application ---
@@ -227,14 +203,9 @@ tk.Button(frame_buttons, text="Download PDB", command=process_file).pack(side=tk
 tk.Button(frame_buttons, text="Split PDB Chains", command=split_pdb_chains).pack(side=tk.LEFT, padx=5)
 tk.Button(frame_buttons, text="Remove NMR Files", command=remove_nmr).pack(side=tk.LEFT, padx=5)
 tk.Button(frame_buttons, text="Remove DNA Files", command=remove_dna).pack(side=tk.LEFT, padx=5)
-tk.Button(frame_buttons, text="Create Empty CSV & Process", command=create_empty_csv_and_process).pack(side=tk.LEFT, padx=5)
 tk.Button(frame_buttons, text="Export Selected Elements", command=export_selected_elements).pack(side=tk.LEFT, padx=5)
 
 
-
-frame_update_csv = tk.Frame(app)
-frame_update_csv.pack(pady=5)
-tk.Button(frame_update_csv, text="Update CSV with PDB Data", command=update_csv_with_pdb_data).pack()
 
 
 frame_elements = tk.Frame(app)

@@ -1,7 +1,7 @@
 import csv
 import os
 import multiprocessing
-from Functions2 import PDBProcessor
+from PDBProcessor import PDBProcessor
 
 def process_file(file_path):
     pdb_processor = PDBProcessor(file_path)
