@@ -1,36 +1,57 @@
-# Usage Instructions:
-1. Download all the files as a complete package, then execute the GUI code file. The application will open, enabling you to download and manage files, creating your preferred dataset for various purposes.
+# BioPDBKit: The ultimate PDB Dataset Toolkit
 
-# Upcoming Additions to this Repository:
-1. A readily available dataset for users who want something to work with.
-2. A Python package for those who wish to modify the core code to meet their specific requirements, eliminating the need to start from scratch.
-3. Expand the current user interface by integrating deletion buttons for every individual property displayed on the list. At present, the interface includes deletion buttons specifically for NMR and low-resolution data. We aim to introduce additional deletion capabilities for other properties. Furthermore, we plan to implement control variables to provide expert users with the tools they need to effectively manage and manipulate these variables.
+## Overview
+The Ultimate PDB Dataset Toolkit is a resource aimed to ease the process of accessing and using protein data. This toolkit is perfect for individuals in bioinformatics, machine learning, and NLP, whether they're beginners or seasoned professionals.
 
-# Data Cleaning Procedure:
+If you're new to the world of biology and PDB files, don't worry – we've got you covered. We've curated a documentation that provides a high-level description essential for getting started. We aimed to create a resource that's both compact and comprehensive, offering just enough detail to understand the essentials without overwhelming you. 
+link of the document: (to be announced)
 
-We are working with a dataset containing protein names from the PDB site, and our goal is to streamline the data-cleaning process using automated methods. While manual downloading is possible on the site, we aim to create a code that can handle this task efficiently.
+## Features
+- **Ultimate PDB Dataset**: A robust dataset originating from authentic biological experiments, encompassing data on about 75,000 organisms. This expands to nearly 200,000 unique biological profiles when considering individual chains of proteins, DNA, or RNA.
+- **Customizable Data Selection**: A set of tools that enable you to handpick and modify datasets to fit the exact needs of your project. These tools support both JSON and CSV formats and include a user-friendly GUI for ease of use.
+- **BioPDBKit**: A specialized Python package for those who prefer a more hands-on approach to data manipulation, suitable for advanced users.
 
-Here's the step-by-step process we'll follow:
+## Getting Started
 
-1. **Data Retrieval and Initial Filtering:**
-   We will initiate the process by extracting protein names from the PDB site. Our code will then automatically download the corresponding files. This approach simplifies data scraping and enhances efficiency, providing a structured dataset. While direct manual downloads are feasible, automation offers more streamlined handling.
+### Installation
+Install the toolkit via pip with this simple command:
+```
+pip install BioPDBKit
+```
 
-2. **Categorization of Protein Types:**
-   After the initial download, we will categorize the proteins based on their types. Proteins that are DNAs (NMR) and EM (complexes) will be identified and segregated into a separate CSV file. This segregation ensures that the dataset remains organized and suitable for downstream analyses.
+### Downloading PDB Files
+1. Identify and list the PDB files you require.
+2. Input these names into our downloader, either directly or via a CSV file with the names in the first column.
+3. The downloader will efficiently gather these files into a designated directory for your convenience.
 
-3. **Refining the Dataset:**
-   We will proceed by eliminating undesired data points. This involves removing proteins with low resolutions and excluding those that are not based on X-ray experiment types. This refinement step ensures that the dataset consists of high-quality, relevant protein structures for further processing.
+### Dataset Customization
+- Our GUI provides an intuitive platform for dataset customization, allowing you to select only the data relevant to your project.
+- For those preferring ready-made solutions, we offer pre-compiled datasets in JSON and CSV formats, tailored to common use cases.
 
-4. **Handling Multi-Chain Files:**
-   For proteins composed of multiple chains, such as the example 1abc with 2 chains, we will create distinct entries for each chain. This separation results in entries like 1abc_1 and 1abc_2. By doing this, we maintain granularity in our dataset, enabling more precise analyses.
+### Using BioPDBKit
+- BioPDBKit is ideal for users with programming expertise who wish to engage deeply with data manipulation.
+- The package allows intricate operations on protein data, enhancing the possibilities for your research and development.
+- Detailed documentation is provided for guidance and best practices.
 
-5. **3D Coordinate List Creation:**
-   We will compile a comprehensive list of 3D coordinates from the protein structures. These coordinates will be retained in their original form, without tokenization, to serve as informative labels. This step facilitates the preservation of structural information for downstream tasks.
+## Dataset Composition
+**Included Fields**:
+- Protein name, experiment type, protein sequence, resolution, R factor-value, chain ID, secondary structure, and b-factor/value.
 
-6. **Sequence Tokenization:**
-   To process protein sequences, we will utilize a tokenizer. In Phase 1, we used a BERT tokenizer; however, we have recognized the potential of the Protrans tokenizer to be more suitable for our needs. Tokenizing sequences allows us to convert them into a format compatible with machine learning models.
+**Excluded Fields** (for clarity and focus):
+- PDB ID, release date, authors, organism details, and atom numbers for various components.
 
-7. **Note on Tokenization Outcome:**
-   It's essential to note that the tokenizer's output will consist of IDs representing the tokenized sequences, rather than full vectors. This design decision is influenced by the underlying architecture of the model and facilitates access to information in deeper layers for subsequent analyses.
+## Objective
+Our toolkit's primary goal is to simplify the process of creating datasets for machine learning and NLP applications. It is particularly suited for tasks such as classification, structure prediction, and protein-protein interaction (PPI) classification.
 
-By following this refined data cleaning procedure, we aim to establish a well-structured and comprehensive dataset that can be effectively utilized for various analyses and modeling tasks.
+## Example Application
+We have utilized this toolkit to develop a Bert-based model for classification tasks. This model is a testament to the dataset's quality, with unique tweaks in its hidden layers showcasing the dataset's versatility. Comprehensive details about our methods and findings will be shared in the near future.
+
+## Contributing
+We welcome contributions to enhance the Ultimate PDB Dataset Toolkit. Please refer to our contribution guidelines for more information on how to submit your proposals or improvements.
+
+## License
+This project is licensed under [LICENSE NAME] - see the LICENSE file for more details.
+
+## Acknowledgments
+- Heartfelt thanks to the community of contributors and researchers who have supported this project.
+- Recognition of any supporting institutions, grants, or collaborative efforts.
