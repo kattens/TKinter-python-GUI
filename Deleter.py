@@ -1,5 +1,4 @@
 import os
-import time
 
 class FileDeleter:
     def __init__(self, directory_path, keyword):
