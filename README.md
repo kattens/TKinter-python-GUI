@@ -4,7 +4,7 @@
 The Ultimate PDB Dataset Toolkit is a resource aimed to ease the process of accessing and using protein data. This toolkit is perfect for individuals in bioinformatics, machine learning, and NLP, whether they're beginners or seasoned professionals.
 
 If you're new to the world of biology and PDB files, don't worry – we've got you covered. We've curated a documentation that provides a high-level description essential for getting started. We aimed to create a resource that's both compact and comprehensive, offering just enough detail to understand the essentials without overwhelming you. 
-link of the document: (to be announced)
+The document: (Detailed_Exploration_of_Biological_Molecules_and_PDB_Files)
 
 ## Features
 - **Ultimate PDB Dataset**: A robust dataset originating from authentic biological experiments, encompassing data on about 75,000 organisms. This expands to nearly 200,000 unique biological profiles when considering individual chains of proteins, DNA, or RNA.
