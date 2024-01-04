@@ -52,9 +52,5 @@ We have utilized this toolkit to develop a Bert-based model for classification t
 ## Contributing
 We welcome contributions to enhance the Ultimate PDB Dataset Toolkit. Please refer to our contribution guidelines for more information on how to submit your proposals or improvements.
 
-## License
-This project is licensed under [LICENSE NAME] - see the LICENSE file for more details.
 
-## Acknowledgments
-- Heartfelt thanks to the community of contributors and researchers who have supported this project.
 - Recognition of any supporting institutions, grants, or collaborative efforts.
