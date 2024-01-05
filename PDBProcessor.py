@@ -5,12 +5,11 @@ from Bio import PDB
 from Bio.PDB.Polypeptide import is_aa  # Make sure to import this if it's not already
 
 class PDBProcessor:
-    def __init__(self, folder_path,methods_to_call):
-        def __init__(self, folder_path, methods_to_call):
-            self.folder_path = folder_path
-            self.methods_to_call = methods_to_call  # List of methods to call
-            self.all_protein_data = []  # Initialize the list to hold all protein data.
-            self.process_all_pdb_files()
+    def __init__(self, folder_path, methods_to_call):
+        self.folder_path = folder_path
+        self.methods_to_call = methods_to_call  # List of methods to call
+        self.all_protein_data = []  # Initialize the list to hold all protein data.
+        self.process_all_pdb_files()
 
     def process_all_pdb_files(self):
         for filename in os.listdir(self.folder_path):
@@ -51,6 +50,7 @@ class PDBProcessor:
         return protein_data
     
     
+
     def write_data_to_json(self):
         
         with open('PDBFiles.json', 'w') as json_file:
@@ -58,7 +58,10 @@ class PDBProcessor:
         print("Data has been written to PDBFiles.json")
 
     def write_data_to_csv(self):
-
+        if not self.all_protein_data:
+            print("No protein data available to write to CSV.")
+            return
+        
         # Define the header(name of the columns) based on the keys of the first protein data
         header = self.all_protein_data[0].keys()
 
@@ -171,11 +174,3 @@ class PDBProcessor:
                     if 'CA' in residue:
                         b_factors.append(residue['CA'].get_bfactor())
         return sum(b_factors) / len(b_factors) if b_factors else "N/A"
-
-"""
-#EXAMPLE USAGE IN COLAB WAS THIS
-# Example usage
-folder_path = '/content/drive/MyDrive/expl'
-processor = PDBProcessor(folder_path)
-
-"""
