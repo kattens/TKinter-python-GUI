@@ -1,14 +1,42 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QFileDialog, QMessageBox, QCheckBox
 
+from PyQt5.QtCore import QUrl, QTimer
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMainWindow
+from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+from PyQt5.QtMultimediaWidgets import QVideoWidget
+
 # Import your existing processing classes
 from PDB_Downloader import PDBDownloader
 from Chain_Seperator import PDBChainSplitter
 from PDBProcessor import PDBProcessor
 
+class VideoSplashScreen(QWidget):
+    def __init__(self, video_path, parent=None):
+        
+        super().__init__(parent)
+        self.setMinimumSize(1800, 1200)
+        self.setWindowTitle("Splash Screen")
+        self.setGeometry(600, 300, 600, 400)
+        self.player = QMediaPlayer()
+        self.video_widget = QVideoWidget()
+        layout = QVBoxLayout()
+        layout.addWidget(self.video_widget)
+        self.setLayout(layout)
+        self.player.setVideoOutput(self.video_widget)
+        self.player.setMedia(QMediaContent(QUrl.fromLocalFile(video_path)))
+        self.player.play()
+        self.player.mediaStatusChanged.connect(self.on_media_status_changed)
+
+    def on_media_status_changed(self, status):
+        if status == QMediaPlayer.EndOfMedia:
+            self.close()
+
+
 class PDBManagerApp(QWidget):
     def __init__(self):
         super().__init__()
+        self.setGeometry(100, 100, 640, 480)
 
         self.global_output_path = ""
         self.global_csv_file_path = ""
@@ -71,7 +99,7 @@ class PDBManagerApp(QWidget):
         # Set main layout
         self.setLayout(layout)
         self.setWindowTitle("BioPDBKit")
-        self.setGeometry(300, 300, 600, 150)
+        self.setGeometry(600, 600, 800, 350)
 
     def browse_file(self):
         options = QFileDialog.Options()
@@ -128,6 +156,12 @@ class PDBManagerApp(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+
+    splash_video = "C:\\Users\\KATT\\Documents\\BioPDBKit\\intro.mp4"
+    splash = VideoSplashScreen(splash_video)
+    splash.show()
+
     ex = PDBManagerApp()
     ex.show()
+
     sys.exit(app.exec_())
