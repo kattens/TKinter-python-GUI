@@ -5,10 +5,9 @@ from Bio import PDB
 from Bio.PDB.Polypeptide import is_aa  # Make sure to import this if it's not already
 
 class PDBProcessor:
-    def __init__(self, folder_path, methods_to_call):
+    def __init__(self, folder_path):
         self.folder_path = folder_path
-        self.methods_to_call = methods_to_call  # List of methods to call
-        self.all_protein_data = []  # Initialize the list to hold all protein data.
+        self.all_protein_data = []  # Initialize the list to store protein data
         self.process_all_pdb_files()
 
     def process_all_pdb_files(self):
@@ -29,25 +28,19 @@ class PDBProcessor:
         self.write_data_to_csv()
 
     def get_pdb_info(self):
-        protein_data = {}
-        method_functions = {
-            "Protein Name": self.protein_name,
-            "Polymer Entity": self.polymer_entity,
-            "Sequence": self.sequence,
-            "C-alpha Coordinates": self.c_alpha_coords,
-            "Refinement Resolution": self.refinement_resolution,
-            "Experiment Type": self.experiment_type,
-            "Enzyme Classification": self.enzyme_classification,
-            "Symmetry Type": self.symmetry_type,
-            "R Factor": self.r_factor,
-            "B Factor": self.b_factor
+        protein_data = {
+            "Protein Name": self.protein_name(),
+            "Polymer Entity": self.polymer_entity(),
+            "Sequence": self.sequence(),
+            "Refinement Resolution": self.refinement_resolution(),
+            "Experiment Type": self.experiment_type(),
+            "Enzyme Classification": self.enzyme_classification(),
+            "Symmetry Type": self.symmetry_type(),
+            "R Factor": self.r_factor(),
+            "B Factor": self.b_factor(),
+            # C-alpha Coordinates moved to the end
+            "C-alpha Coordinates": self.c_alpha_coords()
         }
-
-        for method_name in self.methods_to_call:
-            if method_name in method_functions:
-                protein_data[method_name] = method_functions[method_name]()
-                print(f"Method called: {method_name}, Result: {protein_data[method_name]}")  # Debugging print
-
         return protein_data
     
     
@@ -81,7 +74,7 @@ class PDBProcessor:
 
 
     def polymer_entity(self):
-        criteria = {"DNA": False, "Protein": False, "RNA": False}
+        criteria = {"DNA": False, "RNA": False, "Protein": False}
         for model in self.structure:
             for chain in model:
                 for residue in chain:
@@ -91,9 +84,8 @@ class PDBProcessor:
                         criteria["RNA"] = True
                     elif is_aa(residue, standard=True):
                         criteria["Protein"] = True
-        return ('DNA' if criteria["DNA"] else '') + \
-               ('RNA' if criteria["RNA"] else '') + \
-               ('Protein' if criteria["Protein"] else '') or 'Unknown'
+        entities = [entity for entity, present in criteria.items() if present]
+        return '/'.join(entities) if entities else 'Unknown'
 
     def sequence(self):
         sequences = {'Protein': [], 'DNA': [], 'RNA': []}
@@ -175,3 +167,17 @@ class PDBProcessor:
                     if 'CA' in residue:
                         b_factors.append(residue['CA'].get_bfactor())
         return sum(b_factors) / len(b_factors) if b_factors else "N/A"
+
+    def extract_info_from_lines(self, startswith, index=-2):
+        for line in self.pdb_lines:
+            if line.startswith(startswith):
+                return line.split()[index]
+        return "Information not found"
+
+    
+    
+    def refinement_resolution(self):
+        return self.extract_info_from_lines("REMARK   2 RESOLUTION.")
+
+    def experiment_type(self):
+        return self.extract_info_from_lines("EXPDTA", 1)

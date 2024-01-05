@@ -54,19 +54,8 @@ def export_selected_elements():
         messagebox.showerror("Error", "Output path not set.")
         return
 
-    # Getting the values from vars_elements and corresponding element names
-    selected_methods = [element for element, var in zip(elements, vars_elements) if var.get() == 1]
-
-    print("Selected methods:")
-    for element, var in zip(elements, vars_elements):
-        print(f"{element}: {'Selected' if var.get() == 1 else 'Not selected'}")
-
-    if not selected_methods:
-        messagebox.showinfo("No Selection", "Please select at least one method.")
-        return
-
     # Assuming you have a function in PDBProcessor to process and save the data
-    processor = PDBProcessor(global_output_path, selected_methods)
+    processor = PDBProcessor(global_output_path)
     processor.process_all_pdb_files()  # Process the files using the selected methods
 
     messagebox.showinfo("Process Complete", "Processing of PDB files is complete!")
