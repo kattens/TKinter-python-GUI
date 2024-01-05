@@ -139,23 +139,39 @@ def remove_dna():
 
 
 # Global variables to store GUI elements
-elements = ["Polymer_Entity", "Refinement_Resolution", "Experiment_Type", "Sequence", 
-            "Enzyme_Classification", "Symmetry_Type", "C_alpha_Coords"]
-vars_elements = []  # Store tkinter BooleanVar instances for each checkbox element
+
+elements = [
+    "Protein Name",
+    "Polymer Entity",
+    "Sequence",
+    "C-alpha Coordinates",
+    "Refinement Resolution",
+    "Experiment Type",
+    "Enzyme Classification",
+    "Symmetry Type",
+    "R Factor",
+    "B Factor",
+]
+
 def export_selected_elements():
-    """Function to export selected elements."""
-    global global_output_path  # Use the global output path
+    global global_output_path
 
-    # Check which elements are selected by the user
-    selected_elements = [element for element, var in zip(elements, vars_elements) if var.get()]
+    selected_methods = [element for element, var in zip(elements, vars_elements) if var.get()]
 
-    if not selected_elements:
-        messagebox.showinfo("No Selection", "Please select at least one element.")
+    if not selected_methods:
+        messagebox.showinfo("No Selection", "Please select at least one method.")
         return
 
     if not global_output_path:
         messagebox.showerror("Error", "Output path not set.")
         return
+
+    # Assuming you have a function in PDBProcessor to process and save the data
+    processor = PDBProcessor(global_output_path, selected_methods)
+    processor.process_all_pdb_files()  # Process the files using the selected methods
+
+    messagebox.showinfo("Process Complete", "Processing of PDB files is complete!")
+
 
     # Create the file path for exporting
     #file_path = os.path.join(global_output_path, "selected_elements.csv")

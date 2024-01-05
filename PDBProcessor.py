@@ -5,10 +5,12 @@ from Bio import PDB
 from Bio.PDB.Polypeptide import is_aa  # Make sure to import this if it's not already
 
 class PDBProcessor:
-    def __init__(self, folder_path):
-        self.folder_path = folder_path
-        self.all_protein_data = []  # Initialize the list to hold all protein data.
-        self.process_all_pdb_files()
+    def __init__(self, folder_path,methods_to_call):
+        def __init__(self, folder_path, methods_to_call):
+            self.folder_path = folder_path
+            self.methods_to_call = methods_to_call  # List of methods to call
+            self.all_protein_data = []  # Initialize the list to hold all protein data.
+            self.process_all_pdb_files()
 
     def process_all_pdb_files(self):
         for filename in os.listdir(self.folder_path):
@@ -28,20 +30,27 @@ class PDBProcessor:
         self.write_data_to_csv()
 
     def get_pdb_info(self):
-        protein_data = {
-            "Protein Name": self.protein_name(),  # This will now call the modified protein_name method
-            "Polymer Entity": self.polymer_entity(),
-            "Sequence": self.sequence(),
-            "C-alpha Coordinates": self.c_alpha_coords(),
-            "Refinement Resolution": self.refinement_resolution(),
-            "Experiment Type": self.experiment_type(),
-            "Enzyme Classification": self.enzyme_classification(),
-            "Symmetry Type": self.symmetry_type(),
-            "R Factor": self.r_factor(),
-            "B Factor": self.b_factor()
+        protein_data = {}
+        method_functions = {
+            "Protein Name": self.protein_name,
+            "Polymer Entity": self.polymer_entity,
+            "Sequence": self.sequence,
+            "C-alpha Coordinates": self.c_alpha_coords,
+            "Refinement Resolution": self.refinement_resolution,
+            "Experiment Type": self.experiment_type,
+            "Enzyme Classification": self.enzyme_classification,
+            "Symmetry Type": self.symmetry_type,
+            "R Factor": self.r_factor,
+            "B Factor": self.b_factor
         }
-        return protein_data
 
+        for method_name in self.methods_to_call:
+            if method_name in method_functions:
+                protein_data[method_name] = method_functions[method_name]()
+
+        return protein_data
+    
+    
     def write_data_to_json(self):
         
         with open('PDBFiles.json', 'w') as json_file:
