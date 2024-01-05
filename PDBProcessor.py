@@ -46,6 +46,7 @@ class PDBProcessor:
         for method_name in self.methods_to_call:
             if method_name in method_functions:
                 protein_data[method_name] = method_functions[method_name]()
+                print(f"Method called: {method_name}, Result: {protein_data[method_name]}")  # Debugging print
 
         return protein_data
     

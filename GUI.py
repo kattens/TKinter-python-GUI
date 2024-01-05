@@ -50,12 +50,16 @@ def split_pdb_chains():
 
 
 def export_selected_elements():
-    """Function to process selected PDB file elements."""
     if not global_output_path:
         messagebox.showerror("Error", "Output path not set.")
         return
 
-    selected_methods = [element for element, var in zip(elements, vars_elements) if var.get()]
+    # Getting the values from vars_elements and corresponding element names
+    selected_methods = [element for element, var in zip(elements, vars_elements) if var.get() == 1]
+
+    print("Selected methods:")
+    for element, var in zip(elements, vars_elements):
+        print(f"{element}: {'Selected' if var.get() == 1 else 'Not selected'}")
 
     if not selected_methods:
         messagebox.showinfo("No Selection", "Please select at least one method.")
@@ -107,13 +111,15 @@ frame_elements = tk.Frame(app)
 frame_elements.pack(pady=10)
 
 elements = [
-    "Polymer_Entity",
-    "Refinement_Resolution",
-    "Experiment_Type",
-    "Sequence",
-    "Enzyme_Classification",
-    "Symmetry_Type",
-    "C_alpha_Coords",
+    "protein_name",
+    "polymer_entity",
+    "refinement_resolution",
+    "experiment_type",
+    "sequence",
+    "enzyme_classification",
+    "symmetry_type",
+    "c_alpha_coords",
+    'r_factor',
 ]
 vars_elements = []
 for element in elements:
@@ -121,4 +127,5 @@ for element in elements:
     tk.Checkbutton(frame_elements, text=element, variable=var).pack(side=tk.LEFT, padx=5)
     vars_elements.append(var)
 
+    print(vars_elements)
 app.mainloop()
