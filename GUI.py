@@ -10,7 +10,7 @@ from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PDB_Downloader import PDBDownloader
 from Chain_Seperator import PDBChainSplitter
 from PDBProcessor import PDBProcessor
-
+from ElementRemover import ElementRemover
 class VideoSplashScreen(QWidget):
     def __init__(self, video_path, parent=None):
         
@@ -67,7 +67,7 @@ class PDBManagerApp(QWidget):
 
         # Buttons section
         buttons_layout = QHBoxLayout()
-        export_btn = QPushButton("Export Elements")
+        export_btn = QPushButton("Create json-CSV")
         export_btn.clicked.connect(self.export_selected_elements)
         split_btn = QPushButton("Split PDB Chains")
         split_btn.clicked.connect(self.split_pdb_chains)
@@ -76,7 +76,9 @@ class PDBManagerApp(QWidget):
         buttons_layout.addWidget(export_btn)
         buttons_layout.addWidget(split_btn)
         buttons_layout.addWidget(download_btn)
-
+        remove_elements_btn = QPushButton("Remove Elements")
+        remove_elements_btn.clicked.connect(self.remove_selected_elements)
+        buttons_layout.addWidget(remove_elements_btn)
         # Checkboxes for elements
         self.elements = [
             "protein_name", "polymer_entity", "refinement_resolution",
@@ -150,6 +152,26 @@ class PDBManagerApp(QWidget):
             downloader = PDBDownloader(self.global_output_path, self.global_csv_file_path)
             downloader.download_pdb()
             QMessageBox.information(self, "Process Complete", "Downloading of PDB files is complete!")
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
+    
+    
+    def remove_selected_elements(self):
+        """Function to remove selected elements from JSON file."""
+        if not self.global_output_path:
+            QMessageBox.warning(self, "Error", "Output path not set.")
+            return
+
+        selected_elements = [cb.text() for cb in self.vars_elements if cb.isChecked()]
+        print("Selected elements to remove:", selected_elements)  # Debug print
+    
+        json_file_path = self.global_output_path
+
+        try:
+            element_remover = ElementRemover(json_file_path, selected_elements)
+            element_remover.process_json()
+
+            QMessageBox.information(self, "Process Complete", "Selected elements have been removed.")
         except Exception as e:
             QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
 
