@@ -12,7 +12,7 @@ The document: (Detailed_Exploration_of_Biological_Molecules_and_PDB_Files)
 - **Customizable Data Selection**: A set of tools that enable you to handpick and modify datasets to fit the exact needs of your project. These tools support both JSON and CSV formats and include a user-friendly GUI for ease of use.
 CSV and link:https://www.kaggle.com/datasets/kattens/biopdbkit
 
--**BERT for BioPDBKit**:
+- **BERT for BioPDBKit**:
   We have fine-tuned  a bert transformer model on the data for a classification task to show an implementation of our dataset. link: https://www.kaggle.com/kattens/bert-for-biopdbkit
 
 - **BioPDBKit**: A specialized Python package for those who prefer a more hands-on approach to data manipulation, suitable for advanced users.
